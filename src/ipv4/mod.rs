@@ -1,16 +1,14 @@
 mod ipv4 {
 
+    // TODO: FQDN and reverse DNS lookups
+
     struct IPv4Address {
         address: String,
     }
 
     impl IPv4Address {
-        /// Enumerate octets
-        fn _enumerate(&self) {
-            todo!();
-        }
-
-        /// Verify if the address is valid
+        /// Return true if this address is a valid IPv4 address
+        /// and false otherwise
         fn is_valid(&self) -> bool {
             let octets = self.address.split(".");
             for octet in octets {
@@ -22,38 +20,66 @@ mod ipv4 {
             return true;
         }
 
-        /// Convert the IPv4Address to decimal notation
-        fn to_binary(&self) -> Result<&'static str, ()> {
-            if !self.is_valid() {
-                return Err(());
-            }
-            return Ok("TODO");
-        }
-
-        /// Convert the IPv4Address to decimal notation
-        fn to_decimal(&self) -> Result<&'static str, ()> {
-            if !self.is_valid() {
-                return Err(());
-            }
-
-            return Ok("TODO");
-        }
-
+        /// Return true if this address is a loopback address
+        /// and false otherwise
         fn is_loopback(&self) -> bool {
-            return false;
+            return self.address.eq("127.0.0.1");
         }
 
+        /// Return true if this address is a multicast address
+        /// and false otherwise
         fn is_multicast(&self) -> bool {
             return false;
         }
     }
 
+    /// Represents an IPv4 network
+    struct IPv4Network {
+        host: String,
+
+        /// The network prefix
+        prefix: u64,
+    }
+
+    impl IPv4Network {
+        /// Return true if this network contains the given address
+        /// and false otherwise
+        fn contains(&self, address: &IPv4Address) -> bool {
+            return false;
+        }
+
+        /// Return all possible hosts within this network
+        fn get_all_hosts(&self) -> Vec<String> {
+            todo!();
+        }
+
+        /// Return all addresses within the intersect of this network
+        /// and another network
+        fn get_intersect(&self, other: IPv4Network) {
+            todo!();
+        }
+
+        fn subnet_mask(&self) {
+            todo!();
+        }
+
+        fn to_cidr(&self) {
+            todo!();
+        }
+
+        // TODO Get class of the network
+        fn class(&self) {
+            todo!();
+        }
+    }
+
+    // TODO Clean up and simplify tests
     #[cfg(test)]
     mod tests {
         use super::*;
 
         #[test]
-        fn test_valid_address() {
+        fn test_is_valid() {
             let address = IPv4Address {
                 address: String::from("127.0.0.1"),
             };
@@ -68,10 +94,7 @@ mod ipv4 {
                 address: String::from("255.255.255.255"),
             };
             assert!(address.is_valid());
-        }
 
-        #[test]
-        fn test_invalid_address() {
             let address = IPv4Address {
                 address: String::from("256.100.0.2"),
             };
@@ -86,6 +109,19 @@ mod ipv4 {
                 address: String::from("0.0.0.256"),
             };
             assert!(!address.is_valid());
+        }
+
+        #[test]
+        fn test_is_loopback() {
+            let address = IPv4Address {
+                address: String::from("127.0.0.1"),
+            };
+            assert!(address.is_loopback());
+
+            let address = IPv4Address {
+                address: String::from("127.0.0.0"),
+            };
+            assert!(!address.is_loopback());
         }
     }
 }
